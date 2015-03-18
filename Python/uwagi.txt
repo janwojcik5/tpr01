@@ -1,0 +1,3 @@
+W interfejsie MPI w jezyku Python dostepne sa dwa tryby serializacji danych przed przesylaniem do innego procesu: opierajaca sie o znana w Pythonie technike
+serializacji "pickle", lub tez w standardzie dostawcy bufora (uzywajac do wysylania i odbierania metod zaczynajacych sie od duzych liter). Zdecydowlem sie
+(J. Wojcik) na uzycie pierwszej z wymienionych wyzej wersji ze wzgledu na wykorzystanie jej w przykladach z zajec.
