@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
   MPI_Barrier(MPI_COMM_WORLD);
   double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time*MPI_Wtick());
   printf("%lf Mbit/s capacity ", capacity);
-  printf("%lfs of delay on single message", (time*MPI.Wtick()/(float)number_of_sends));
+  printf("%lfs of delay on single message", (time*MPI_Wtick()/(float)number_of_sends));
   
   MPI_Finalize();
 } 
