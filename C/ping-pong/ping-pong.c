@@ -24,11 +24,10 @@ int main(int argc, char** argv) {
   int bytes_per_send = atoi(argv[2]);
   char* data = (char*)malloc(bytes_per_send);
   
-  double time = MPI_Wtime();
-  
   if (world_rank == 0) {
     // If we are rank 0, set the number to -1 and send it to process 1
     int i = 0;
+    double time = MPI_Wtime();
     for(i = 0; i<number_of_sends; ++i){
       printf("ping... ");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
@@ -47,6 +46,7 @@ int main(int argc, char** argv) {
       printf("pong!\n");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
+    MPI_Barrier(MPI_COMM_WORLD);
   }
   
   MPI_Finalize();
