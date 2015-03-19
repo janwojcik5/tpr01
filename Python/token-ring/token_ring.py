@@ -3,9 +3,10 @@ from mpi4py import MPI
 from sys import argv
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
+size = comm.Get_size()
 
 #usage:
-#ping_pong.py [number_of_sends] [bytes_per_send] [-v]
+#token_ring.py [number_of_sends] [bytes_per_send] [number_of_nodes] [-v]
 	
 if len(argv)>3 and argv[3]=='-v':
 	verbose=True
@@ -19,27 +20,17 @@ if len(argv)>1:
 	number_of_sends=int(argv[1])
 else:
 	number_of_sends=25
+
 time=MPI.Wtime()
-if rank == 0:
-	for i in range(number_of_sends):
-   		data = bytearray(bytes_per_send)
-  		comm.send(data, dest=1)
-		if verbose:
-			print "Process 0 sent data"
-		data = comm.recv(source=1)
-		if verbose:
-			print "Process 0 received data"
-elif rank == 1:
-	for i in range(number_of_sends):
-   		data = bytearray(bytes_per_send)
-  		comm.send(data, dest=0)
-		if verbose:
-			print "Process 1 sent data"
-		data = comm.recv(source=0)
-		if verbose:
-			print "Process 1 received data"
-else:
-	print "Expected two nodes"
+for i in range(number_of_sends):
+   	data = bytearray(bytes_per_send)
+  	comm.send(data, dest=(rank+1)%size)
+	if verbose:
+		print "Process "+rank+" sent data"
+	data = comm.recv(source=(rank-1)%size)
+	if verbose:
+		print "Process 0 received data"
+
 #substract the times
 time=MPI.Wtime()-time
 comm.Barrier()

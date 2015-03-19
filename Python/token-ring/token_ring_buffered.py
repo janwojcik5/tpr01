@@ -5,6 +5,7 @@ from sys import argv
 from array import array
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
+size = comm.Get_size()
 
 #usage:
 #ping_pong.py [number_of_sends] [bytes_per_send] [buffer_size] [-v]
@@ -30,35 +31,18 @@ buf=array('b',[0]*buffer_size)
 MPI.Attach_buffer(buf)
 time=MPI.Wtime()
 
-if rank == 0:
-	clean_buffer_count=0
-	for i in range(number_of_sends):
-		data = comm.recv(source=1)
-   		data = bytearray(bytes_per_send)
-		if i%(buffer_size/bytes_per_send)==0:
-			MPI.Detach_buffer()
-			MPI.Attach_buffer(buf)
-  		comm.bsend(data, dest=1)
-		if verbose:
-			print "Process 0 sent data"
-		if verbose:
-			print "Process 0 received data"
-
-elif rank == 1:
-	clean_buffer_count=0
-	for i in range(number_of_sends):
-   		data = bytearray(bytes_per_send)
-		if i%(buffer_size/bytes_per_send)==0:
-			MPI.Detach_buffer()
-			MPI.Attach_buffer(buf)
-  		comm.bsend(data, dest=0)
-		if verbose:
-			print "Process 1 sent data"
-		data = comm.recv(source=0)
-		if verbose:
-			print "Process 1 received data"
-else:
-	print "Expected two nodes"
+clean_buffer_count=0
+for i in range(number_of_sends):
+        data = bytearray(bytes_per_send)
+	comm.bsend(data,dest=(rank+1)%size)
+	if i%(buffer_size/bytes_per_send)==0:
+		MPI.Detach_buffer()
+		MPI.Attach_buffer(buf)
+  	comm.recv(source=(rank-1)%size)
+	if verbose:
+		print "Process 0 sent data"
+	if verbose:
+		print "Process 0 received data"
 
 MPI.Detach_buffer()
 
