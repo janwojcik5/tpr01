@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
       printf("ping... ");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      printf("...");
     }
     time = MPI_Wtime() - time;
     MPI_Barrier(MPI_COMM_WORLD);
@@ -42,8 +43,8 @@ int main(int argc, char** argv) {
   } else if (world_rank == 1) {
     int i = 0;
     for(i = 0; i<number_of_sends; ++i){
-      printf("pong!");
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      printf("pong!\n");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
   }
