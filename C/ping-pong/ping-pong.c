@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
     // If we are rank 0, set the number to -1 and send it to process 1
     int i = 0;
     for(i = 0; i<number_of_sends; ++i){
+      printf("ping... ");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
@@ -41,6 +42,7 @@ int main(int argc, char** argv) {
   } else if (world_rank == 1) {
     int i = 0;
     for(i = 0; i<number_of_sends; ++i){
+      printf("pong!");
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
