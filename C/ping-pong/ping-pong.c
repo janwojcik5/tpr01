@@ -34,8 +34,8 @@ int main(int argc, char** argv) {
     }
     time = MPI_Wtime() - time;
     MPI_Barrier(MPI_COMM_WORLD);
-    double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time*MPI_Wtick());
-    printf("time: %lfs\n%lf Mbit/s capacity\n%lfs of delay on single message\n", time*MPI_Wtime(), capacity, (time*MPI_Wtick()/(double)number_of_sends));
+    double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time);
+    printf("time: %lfs\n%lf Mbit/s capacity\n%lfs of delay on single message\n", time, capacity, (time/(double)number_of_sends));
   
   } else if (world_rank == 1) {
     int i = 0;
