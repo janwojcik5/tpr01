@@ -33,6 +33,11 @@ int main(int argc, char** argv) {
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
+    time = MPI_Wtime() - time;
+    MPI_Barrier(MPI_COMM_WORLD);
+    double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time*MPI_Wtick());
+    printf("%lf Mbit/s capacity\n%lfs of delay on single message\n", capacity, (time*MPI_Wtick()/(float)number_of_sends));
+  
   } else if (world_rank == 1) {
     int i = 0;
     for(i = 0; i<number_of_sends; ++i){
@@ -40,12 +45,6 @@ int main(int argc, char** argv) {
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
   }
-  
-  time = MPI_Wtime() - time;
-  MPI_Barrier(MPI_COMM_WORLD);
-  double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time*MPI_Wtick());
-  printf("%lf Mbit/s capacity ", capacity);
-  printf("%lfs of delay on single message", (time*MPI_Wtick()/(float)number_of_sends));
   
   MPI_Finalize();
 } 
