@@ -29,21 +29,18 @@ int main(int argc, char** argv) {
     int i = 0;
     double time = MPI_Wtime();
     for(i = 0; i<number_of_sends; ++i){
-      printf("ping... ");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      printf("...");
     }
     time = MPI_Wtime() - time;
     MPI_Barrier(MPI_COMM_WORLD);
     double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time*MPI_Wtick());
-    printf("%lf Mbit/s capacity\n%lfs of delay on single message\n", capacity, (time*MPI_Wtick()/(float)number_of_sends));
+    printf("time: %lfs\n%lf Mbit/s capacity\n%lfs of delay on single message\n", time, capacity, (time*MPI_Wtick()/(float)number_of_sends));
   
   } else if (world_rank == 1) {
     int i = 0;
     for(i = 0; i<number_of_sends; ++i){
       MPI_Recv(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      printf("pong!\n");
       MPI_Send(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
     MPI_Barrier(MPI_COMM_WORLD);
