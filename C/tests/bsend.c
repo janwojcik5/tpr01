@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
   }
   int number;
   void *b;
-  int size = sizeof(int) + MPI_BSEND_OVERHEAD;
+  int size = sizeof(int)*8+ MPI_BSEND_OVERHEAD;
   
   if (world_rank == 0) {
     // If we are rank 0, set the number to -1 and send it to process 1
