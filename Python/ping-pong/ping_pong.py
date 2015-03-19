@@ -44,7 +44,6 @@ else:
 time=MPI.Wtime()-time
 comm.Barrier()
 #perform scaling
-time=time*MPI.Wtick()
 capacity=float(bytes_per_send*number_of_sends*8)/(float(1000000)*time)
 #at this time 'time' is of unit Mbit/s
 print str(capacity)+"Mbit/s capacity "
