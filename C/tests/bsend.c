@@ -15,17 +15,20 @@ int main(int argc, char** argv) {
     MPI_Abort(MPI_COMM_WORLD, 1); 
   }
   int number;
+  void *b;
+  int size = sizeof(int) + MPI_BSEND_OVERHEAD;
+  
   if (world_rank == 0) {
     // If we are rank 0, set the number to -1 and send it to process 1
     number = -1;
-    void *b;
-    int size = sizeof(int) + MPI_BSEND_OVERHEAD;
     MPI_Buffer_attach(b, size);
     MPI_Bsend(&number, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
     MPI_Buffer_detach(&b, &size);
   } else if (world_rank == 1) {
+    int size = sizeof(int) + MPI_BSEND_OVERHEAD;
     MPI_Recv(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     printf("Process 1 received number %d from process 0\n", number);
+    MPI_Buffer_detach(&b, &size);
   }
   MPI_Finalize();
 }

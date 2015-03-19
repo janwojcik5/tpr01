@@ -21,15 +21,15 @@ int main(int argc, char** argv) {
     number = -1;
     MPI_Request request;
     MPI_Isend(&number, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, &request);
-    MPI_Wait(&request, &status);
-    MPI_Finalize();
+    //MPI_Wait(&request, &status);
+    //MPI_Finalize();
   } else if (world_rank == 1) {
 
     MPI_Request request;
     
     MPI_Irecv(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &request);
-    MPI_Wait(&request, &status);
-    MPI_Finalize();
+    //MPI_Wait(&request, &status);
+    //MPI_Finalize();
     
     printf("Process 1 received number %d from process 0\n", number);
   }
