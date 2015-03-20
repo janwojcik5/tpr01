@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
       MPI_Recv(data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
     time = MPI_Wtime() - time;
+    time = time*Wtick();
     MPI_Barrier(MPI_COMM_WORLD);
     double capacity=(bytes_per_send*number_of_sends*8)/(1000000.0*time);
     printf("time: %lfs\n%lf Mbit/s capacity\n%lfs of delay on single message\n", time, capacity, (time/(double)number_of_sends));
