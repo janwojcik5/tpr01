@@ -66,10 +66,9 @@ MPI.Detach_buffer()
 time=MPI.Wtime()-time
 comm.Barrier()
 #perform scaling
-time=time*MPI.Wtick()
 capacity=float(bytes_per_send*number_of_sends*8)/(float(1000000)*time)
 #at this time 'time' is of unit Mbit/s
-print str(time)+"Mbit/s capacity "
-print str(time*MPI.Wtick()/float(number_of_sends))+"s of delay on single message"
+print str(capacity)+"Mbit/s capacity "
+print str(time/float(number_of_sends))+"s of delay on single message"
 
 

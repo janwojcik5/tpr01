@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from mpi4py import MPI
 from sys import argv
+import time as t
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
@@ -48,4 +49,7 @@ capacity=float(bytes_per_send*number_of_sends*8)/(float(1000000)*time)
 #at this time 'time' is of unit Mbit/s
 print str(capacity)+"Mbit/s capacity "
 print str(time/float(number_of_sends))+"s of delay on single message"
-
+#time=MPI.Wtime()
+#t.sleep(1)
+#time=MPI.Wtime()-time
+#print time
