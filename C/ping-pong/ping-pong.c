@@ -29,8 +29,8 @@ int main(int argc, char** argv) {
     int i = 0;
     double time = MPI_Wtime();
     for(i = 0; i<number_of_sends; ++i){
-      MPI_Send(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
-      MPI_Recv(&data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Send(data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
+      MPI_Recv(data, bytes_per_send, MPI_CHAR, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
     time = MPI_Wtime() - time;
     MPI_Barrier(MPI_COMM_WORLD);
@@ -40,8 +40,8 @@ int main(int argc, char** argv) {
   } else if (world_rank == 1) {
     int i = 0;
     for(i = 0; i<number_of_sends; ++i){
-      MPI_Recv(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      MPI_Send(&data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+      MPI_Recv(data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      MPI_Send(data, bytes_per_send, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
     }
     MPI_Barrier(MPI_COMM_WORLD);
   }
