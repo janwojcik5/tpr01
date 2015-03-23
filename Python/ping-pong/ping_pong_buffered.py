@@ -13,14 +13,16 @@ if len(argv)>4 and argv[4]=='-v':
 	verbose=True
 else:
 	verbose=False
+#the unit of buffer size is one portion of bytes to send
 if len(argv)>3:
 	buffer_size=int(argv[3])
 else:
-	buffer_size=1000
+	buffer_size=5
 if len(argv)>2:
 	bytes_per_send=int(argv[2])
 else:
 	bytes_per_send=16
+buffer_size=buffer_size*bytes_per_send
 if len(argv)>1:
 	number_of_sends=int(argv[1])
 else:
@@ -36,6 +38,7 @@ if rank == 0:
 		data = comm.recv(source=1)
    		data = bytearray(bytes_per_send)
 		if i%(buffer_size/bytes_per_send)==0:
+			#flushing the buffer
 			MPI.Detach_buffer()
 			MPI.Attach_buffer(buf)
   		comm.bsend(data, dest=1)
@@ -51,8 +54,8 @@ elif rank == 1:
 		if i%(buffer_size/bytes_per_send)==0:
 			MPI.Detach_buffer()
 			MPI.Attach_buffer(buf)
-  		comm.bsend(data, dest=0)
-		if verbose:
+		comm.bsend(data,dest=0)
+  		if verbose:
 			print "Process 1 sent data"
 		data = comm.recv(source=0)
 		if verbose:

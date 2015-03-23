@@ -22,14 +22,25 @@ else:
 	number_of_sends=25
 
 time=MPI.Wtime()
-for i in range(number_of_sends):
-   	data = bytearray(bytes_per_send)
-  	comm.send(data, dest=(rank+1)%size)
-	if verbose:
-		print "Process "+rank+" sent data"
-	data = comm.recv(source=(rank-1)%size)
-	if verbose:
-		print "Process 0 received data"
+if rank==0:	
+	for i in range(number_of_sends):
+   		data = bytearray(bytes_per_send)
+  		data = comm.recv(source=(rank-1)%size)
+		if verbose:
+			print "Process "+rank+" sent data"
+		comm.send(data,dest=(rank+1)%size)
+		if verbose:
+			print "Process 0 received data"
+
+else: 
+        for i in range(number_of_sends):
+                data = bytearray(bytes_per_send)
+                comm.send(data, dest=(rank+1)%size)
+                if verbose:
+                        print "Process "+rank+" sent data"
+                data = comm.recv(source=(rank-1)%size)
+                if verbose:
+                        print "Process 0 received data"
 
 #substract the times
 time=MPI.Wtime()-time

@@ -17,11 +17,13 @@ else:
 if len(argv)>3:
 	buffer_size=int(argv[3])
 else:
-	buffer_size=1000
+	buffer_size=5
 if len(argv)>2:
 	bytes_per_send=int(argv[2])
 else:
 	bytes_per_send=16
+buffer_size=buffer_size*bytes_per_send
+
 if len(argv)>1:
 	number_of_sends=int(argv[1])
 else:
@@ -32,17 +34,31 @@ MPI.Attach_buffer(buf)
 time=MPI.Wtime()
 
 clean_buffer_count=0
-for i in range(number_of_sends):
-        data = bytearray(bytes_per_send)
-	comm.bsend(data,dest=(rank+1)%size)
-	if i%(buffer_size/bytes_per_send)==0:
-		MPI.Detach_buffer()
-		MPI.Attach_buffer(buf)
-  	comm.recv(source=(rank-1)%size)
-	if verbose:
-		print "Process 0 sent data"
-	if verbose:
-		print "Process 0 received data"
+if rank==0:
+	for i in range(number_of_sends):
+        	data = bytearray(bytes_per_send)
+		comm.recv(source=(rank-1)%size)
+		if i%(buffer_size/bytes_per_send)==0:
+			MPI.Detach_buffer()
+			MPI.Attach_buffer(buf)
+		comm.bsend(data,dest=(rank+1)%size)
+		if verbose:
+			print "Process 0 sent data"
+		if verbose:
+			print "Process 0 received data"
+
+else:
+        for i in range(number_of_sends):
+                data = bytearray(bytes_per_send)
+                if i%(buffer_size/bytes_per_send)==0:
+                        MPI.Detach_buffer()
+                        MPI.Attach_buffer(buf)
+		comm.bsend(data,dest=(rank+1)%size)
+                comm.recv(source=(rank-1)%size)
+                if verbose:
+                        print "Process 0 sent data"
+                if verbose:
+                        print "Process 0 received data"
 
 MPI.Detach_buffer()
 

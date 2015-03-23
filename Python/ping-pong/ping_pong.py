@@ -33,10 +33,10 @@ if rank == 0:
 elif rank == 1:
 	for i in range(number_of_sends):
    		data = bytearray(bytes_per_send)
-  		comm.send(data, dest=0)
+  		data=comm.recv(source=0)
 		if verbose:
 			print "Process 1 sent data"
-		data = comm.recv(source=0)
+		comm.send(data,dest=0)
 		if verbose:
 			print "Process 1 received data"
 else:
