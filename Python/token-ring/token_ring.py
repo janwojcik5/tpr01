@@ -50,4 +50,7 @@ capacity=float(bytes_per_send*number_of_sends*8)/(float(1000000)*time)
 #at this time 'time' is of unit Mbit/s
 print str(capacity)+"Mbit/s capacity "
 print str(time/float(number_of_sends))+"s of delay on single message"
+if rank==0:
+	file=open('./output/results.txt','a')
+        file.write(str(bytes_per_send)+' '+str(capacity)+' '+str(time/float(number_of_sends)))
 
