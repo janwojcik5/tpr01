@@ -52,5 +52,5 @@ print str(capacity)+"Mbit/s capacity "
 print str(time/float(number_of_sends))+"s of delay on single message"
 if rank==0:
 	file=open('./output/results.txt','a')
-        file.write(str(bytes_per_send)+' '+str(capacity)+' '+str(time/float(number_of_sends)))
+        file.write(str(bytes_per_send)+' '+str(capacity)+' '+str(time/float(number_of_sends))+'\n')
 
