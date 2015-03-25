@@ -25,10 +25,17 @@ int main(int argc, char** argv) {
 	double time=MPI_Wtime();	
 	int number=world_rank+1,result;
 	//loading the operation by repeating the scan many times
-	for(i=0;i<1000;i++) {
-	//	printf("From inside the loop\n");
+	
+	for(i=0;i<10;i++) {
+		printf("From inside the loop. Process %d, iteration %d.\n",world_rank,i);
 	//	sleep(1);
-		MPI_Scan(&number,&result,1,MPI_INT,MPI_PROD,MPI_COMM_WORLD);
+		if(world_rank>0)
+			MPI_Recv(&result,sizeof(int),MPI_INT,world_rank-1,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+		else
+			result=1;
+		result*=world_size+1;
+		if(world_rank<world_size-1)
+			MPI_Send(&result,sizeof(int),MPI_INT,world_rank+1,0,MPI_COMM_WORLD);			
 	}
 	MPI_Barrier(MPI_COMM_WORLD);
 	time=MPI_Wtime()-time;
