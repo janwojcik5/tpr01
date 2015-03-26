@@ -21,11 +21,12 @@ int main(int argc, char** argv) {
     fprintf(stderr, "World size must be greater than 1 for %s\n", argv[0]);
     MPI_Abort(MPI_COMM_WORLD, 1); 
   }
+	const int number_of_iterations=10000;
 	int numbers,i;
 	double time=MPI_Wtime();	
 	int number=world_rank+1,result;
 	//loading the operation by repeating the scan many times
-	for(i=0;i<100000;i++) {
+	for(i=0;i<number_of_iterations;i++) {
 	//	printf("From inside the loop\n");
 	//	sleep(1);
 		MPI_Scan(&number,&result,1,MPI_INT,MPI_PROD,MPI_COMM_WORLD);
@@ -35,7 +36,7 @@ int main(int argc, char** argv) {
   	MPI_Finalize();
 	if(world_rank==world_size-1) {
 		//printf("Result: %d. Elapsed time: %f",result,time);
-		//!!! Format: liczba_procesow[spacja]czas !!!
-		printf("%d %f\n",world_size,time);
+		//!!! Format: liczba_procesow[spacja]liczba iteracji[spacja]czas !!!
+		printf("%d %d %f\n",world_size,number_of_iterations,time);
 	}
 }
