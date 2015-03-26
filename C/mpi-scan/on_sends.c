@@ -21,26 +21,29 @@ int main(int argc, char** argv) {
     fprintf(stderr, "World size must be greater than 1 for %s\n", argv[0]);
     MPI_Abort(MPI_COMM_WORLD, 1); 
   }
-	int numbers,i;
+	MPI_Errhandler_set(MPI_COMM_WORLD,MPI_ERRORS_RETURN);
+	int i;
 	double time=MPI_Wtime();	
-	int number=world_rank+1,result;
+	int result=1;
 	//loading the operation by repeating the scan many times
 	
-	for(i=0;i<10;i++) {
-		printf("From inside the loop. Process %d, iteration %d.\n",world_rank,i);
+	for(i=0;i<100000;i++) {
 	//	sleep(1);
 		if(world_rank>0)
-			MPI_Recv(&result,sizeof(int),MPI_INT,world_rank-1,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-		else
-			result=1;
-		result*=world_size+1;
+			if(MPI_Recv(&result,1,MPI_INT,world_rank-1,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE)!=MPI_SUCCESS) 
+				perror("Problems with MPI_Recv");
+			//printf("Result: %d\n",result);
+		result*=world_rank+1;
 		if(world_rank<world_size-1)
-			MPI_Send(&result,sizeof(int),MPI_INT,world_rank+1,0,MPI_COMM_WORLD);			
+			if(MPI_Send(&result,1,MPI_INT,world_rank+1,0,MPI_COMM_WORLD)!=MPI_SUCCESS) 
+				perror("Problems with MPI_Send");
 	}
 	MPI_Barrier(MPI_COMM_WORLD);
 	time=MPI_Wtime()-time;
   	MPI_Finalize();
 	if(world_rank==world_size-1) {
-		printf("Result: %d. Elapsed time: %f",result,time);
+		//printf("Result: %d. Elapsed time: %f",result,time);
+		//!!! Format wyjscia: liczta procesow[spacja]czas
+		printf("%d %f",world_size,time);
 	}
 }

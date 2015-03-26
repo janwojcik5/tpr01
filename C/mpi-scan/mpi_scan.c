@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 	double time=MPI_Wtime();	
 	int number=world_rank+1,result;
 	//loading the operation by repeating the scan many times
-	for(i=0;i<1000;i++) {
+	for(i=0;i<100000;i++) {
 	//	printf("From inside the loop\n");
 	//	sleep(1);
 		MPI_Scan(&number,&result,1,MPI_INT,MPI_PROD,MPI_COMM_WORLD);
@@ -34,6 +34,8 @@ int main(int argc, char** argv) {
 	time=MPI_Wtime()-time;
   	MPI_Finalize();
 	if(world_rank==world_size-1) {
-		printf("Result: %d. Elapsed time: %f",result,time);
+		//printf("Result: %d. Elapsed time: %f",result,time);
+		//!!! Format: liczba_procesow[spacja]czas !!!
+		printf("%d %f\n",world_size,time);
 	}
 }
